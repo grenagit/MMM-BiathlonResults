@@ -1,0 +1,19 @@
+{
+  "name": "MMM-BiathlonResults",
+  "version": "0.1.0",
+  "description": "Module for a Magic Mirror device display tasks from a .ical calendar.",
+  "main": "MMM-BiathlonResults.js",
+  "author": "Grena",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grenagit/MMM-BiathlonResults.git"
+  },
+  "keywords": [
+    "biathlon",
+		"result"
+  ]
+}

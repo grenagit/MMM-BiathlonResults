@@ -1,0 +1,29 @@
+.MMM-BiathlonResults .title,
+.MMM-BiathlonResults .results,
+.MMM-BiathlonResults .description {
+  padding-bottom: 10px;
+}
+
+.MMM-BiathlonResults .rank {
+  padding-left: 0;
+  padding-right: 10px;
+}
+
+.MMM-BiathlonResults .nation {
+  padding-left: 10px;
+  padding-right: 10px;
+  text-transform: capitalize;
+}
+
+.MMM-BiathlonResults .name {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: left;
+  text-transform: capitalize;
+}
+
+.MMM-BiathlonResults .score {
+  padding-left: 30px;
+  padding-right: 0;
+  text-align: right;
+}
