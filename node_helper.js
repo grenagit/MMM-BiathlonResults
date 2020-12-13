@@ -12,6 +12,7 @@
 
 const NodeHelper = require('node_helper');
 const fetch = require('node-fetch');
+const moment = require('moment');
 
 module.exports = NodeHelper.create({
 
@@ -34,8 +35,8 @@ module.exports = NodeHelper.create({
 				break;
 
 			case "competitions":
-				url += self.config.competitions;
-				url += "?eventid=" + self.config.competitionsid;
+				url += self.config.competitionsEndpoint;
+				url += "?eventid=" + self.config.eventid;
 				break;
 		}
 
@@ -63,7 +64,23 @@ module.exports = NodeHelper.create({
 		})
 		.then(function(result) {
 			if(self.config.showNextEvent) {
-				self.sendSocketNotification("DATA", {"results": result[0], "events": result[1]});
+						
+				var nextEvents = result[1].filter(event => moment(event.EndDate).endOf('day').isAfter(moment().endOf('day'))).filter(event => event.EventId.substr(0, 12) == self.config.cupid.substr(0, 12));
+				self.config.eventid = nextEvents[0].EventId;
+				
+				fetch(self.getUrl("competitions"), options)
+				.then(function(response) {
+					if (response.status === 200) {
+						return response.json();
+					} else {
+						self.sendSocketNotification("ERROR", response.status);
+					}
+				})
+				.then(function(body) {
+					var nextCompetitions = body.filter(competition => moment(competition.StartTime).isAfter(moment())).filter(competition => competition.RaceId.substr(14, 2) == self.config.cupid.substr(14, 2));
+				
+					self.sendSocketNotification("DATA", {"results": result[0], "events": nextEvents, "competitions": nextCompetitions});
+				});
 			} else {
 				self.sendSocketNotification("DATA", {"results": result[0]});
 			}

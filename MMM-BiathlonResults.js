@@ -40,16 +40,6 @@ Module.register("MMM-BiathlonResults",{
 		return ["moment.js"];
 	},
 
-	// Define required translations
-	getTranslations: function() {
-		return {
-			de: "translations/de.json",
-			en: "translations/en.json",
-			es: "translations/es.json",
-			fr: "translations/fr.json",
-		}
-	},
-
 	// Define start sequence
 	start: function() {
 		Log.info("Starting module: " + this.name);
@@ -58,11 +48,9 @@ Module.register("MMM-BiathlonResults",{
 
 		this.title = null;
 		this.results = [];
-		this.events = [];
 		this.description = null;
 		this.location = null;
 		this.start = null;
-		this.end = null;
 
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
@@ -137,7 +125,7 @@ Module.register("MMM-BiathlonResults",{
 			brDescription.innerHTML = this.description;
 
 			wrapper.appendChild(brDescription);
-
+			
 			var brLocation = document.createElement('div');
 			brLocation.className = "light small location";
 
@@ -165,12 +153,10 @@ Module.register("MMM-BiathlonResults",{
 			var spacer = document.createElement("span");
 			spacer.innerHTML = "&nbsp;";
 			brDate.appendChild(spacer);
-
+					
 			var dateText = document.createElement("span");
 			if(moment(this.start).isAfter(moment())) {
-				dateText.innerHTML = " " + this.translate("STARTED") + " " + moment(this.start).fromNow();
-			} else {
-				dateText.innerHTML = " " + this.translate("ENDED") + " " + moment(this.end).fromNow();
+				dateText.innerHTML = " " + this.capFirst(moment(this.start).fromNow());
 			}
 			brDate.appendChild(dateText);
 
@@ -205,12 +191,9 @@ Module.register("MMM-BiathlonResults",{
 		this.results = data.results.Rows;
 
 		if(this.config.showNextEvent) {
-			this.events = data.events.filter(event => moment(event.EndDate).isAfter(moment())).filter(event => event.EventId.includes(this.config.cupid.split("__")[0]));
-
-			this.description = this.events[0].Description;
-			this.location = this.events[0].Organizer + " (" + this.events[0].NatLong + ")";
-			this.start = this.events[0].StartDate;
-			this.end = this.events[0].EndDate;
+			this.description = data.competitions[0].ShortDescription;
+			this.location = data.events[0].Organizer + " (" + data.events[0].NatLong + ")";
+			this.start = data.competitions[0].StartTime;
 		}
 
 		this.loaded = true;
@@ -229,6 +212,11 @@ Module.register("MMM-BiathlonResults",{
 		setTimeout(function() {
 			self.sendSocketNotification('CONFIG', self.config);
 		}, nextLoad);
+	},
+	
+	// Capitalize the first letter of a string
+	capFirst: function (string) {
+		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
 
 	// Comparator proxy to compare two tasks by created date in ascending order
