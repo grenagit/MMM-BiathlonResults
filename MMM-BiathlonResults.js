@@ -30,12 +30,12 @@ Module.register("MMM-BiathlonResults",{
 		competitionsEndpoint: "modules/sportapi/api/competitions",
 	},
 
-	// Define required scripts.
+	// Define required styles
 	getStyles: function () {
 		return ["MMM-BiathlonResults.css", "font-awesome.css"];
 	},
 
-	// Define required scripts.
+	// Define required scripts
 	getScripts: function () {
 		return ["moment.js"];
 	},
