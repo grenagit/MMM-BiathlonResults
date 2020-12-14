@@ -155,9 +155,7 @@ Module.register("MMM-BiathlonResults",{
 			brDate.appendChild(spacer);
 					
 			var dateText = document.createElement("span");
-			if(moment(this.start).isAfter(moment())) {
-				dateText.innerHTML = " " + this.capFirst(moment(this.start).fromNow());
-			}
+			dateText.innerHTML = " " + this.capFirst(moment(this.start).fromNow());
 			brDate.appendChild(dateText);
 
 			wrapper.appendChild(brDate);
@@ -217,11 +215,6 @@ Module.register("MMM-BiathlonResults",{
 	// Capitalize the first letter of a string
 	capFirst: function (string) {
 		return string.charAt(0).toUpperCase() + string.slice(1);
-	},
-
-	// Comparator proxy to compare two tasks by created date in ascending order
-	sortByCreated: function(taskA, taskB) {
-		return moment(taskA.created).diff(moment(taskB.created));
 	}
 
 });
