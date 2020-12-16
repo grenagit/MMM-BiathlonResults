@@ -153,7 +153,7 @@ Module.register("MMM-BiathlonResults",{
 			var spacer = document.createElement("span");
 			spacer.innerHTML = "&nbsp;";
 			brDate.appendChild(spacer);
-					
+
 			var dateText = document.createElement("span");
 			dateText.innerHTML = " " + this.capFirst(moment(this.start).fromNow());
 			brDate.appendChild(dateText);
@@ -172,9 +172,9 @@ Module.register("MMM-BiathlonResults",{
 		} else if (notification === "DATA") {
 			this.processBR(payload);
 		} else if (notification === "ERROR") {
-			Log.error(this.name + ": Do not access to data (" + payload + " HTTP error).");
+			Log.error(this.name + ": Do not access to data (" + payload + ").");
 		} else if (notification === "DEBUG") {
-			Log.error(this.name + " (debug): " + payload);
+			Log.error(this.name + " : Debug (" + payload + ")");
 		}
 	},
 
@@ -184,14 +184,21 @@ Module.register("MMM-BiathlonResults",{
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
-
+		
 		this.title = data.results.CupName + " (" + data.results.RaceCount + "/" + data.results.TotalRaces + ")";
 		this.results = data.results.Rows;
+		
+		this.config.showNextEvent
 
 		if(this.config.showNextEvent) {
-			this.description = data.competitions[0].ShortDescription;
-			this.location = data.events[0].Organizer + " (" + data.events[0].NatLong + ")";
-			this.start = data.competitions[0].StartTime;
+			if (typeof data.events === "undefined" || typeof data.competitions === "undefined") {
+				Log.error(this.name + ": Do not receive usable data for next event (this information will be hidden).");
+				this.config.showNextEvent = false;
+			} else {
+				this.description = data.competitions[0].ShortDescription;
+				this.location = data.events[0].Organizer + " (" + data.events[0].NatLong + ")";
+				this.start = data.competitions[0].StartTime;
+			}
 		}
 
 		this.loaded = true;
@@ -211,7 +218,7 @@ Module.register("MMM-BiathlonResults",{
 			self.sendSocketNotification('CONFIG', self.config);
 		}, nextLoad);
 	},
-	
+
 	// Capitalize the first letter of a string
 	capFirst: function (string) {
 		return string.charAt(0).toUpperCase() + string.slice(1);
