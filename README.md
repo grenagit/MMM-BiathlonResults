@@ -129,7 +129,7 @@ The following properties can be configured:
 
 ## Todo
 
-[ ] Add next competition
+[x] Add next competition
 [ ] Add multiple cups
 
 ## License

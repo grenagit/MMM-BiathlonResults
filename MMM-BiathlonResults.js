@@ -40,16 +40,6 @@ Module.register("MMM-BiathlonResults",{
 		return ["moment.js"];
 	},
 
-	// Define required translations
-	getTranslations: function() {
-		return {
-			de: "translations/de.json",
-			en: "translations/en.json",
-			es: "translations/es.json",
-			fr: "translations/fr.json",
-		}
-	},
-
 	// Define start sequence
 	start: function() {
 		Log.info("Starting module: " + this.name);
@@ -58,11 +48,9 @@ Module.register("MMM-BiathlonResults",{
 
 		this.title = null;
 		this.results = [];
-		this.events = [];
 		this.description = null;
 		this.location = null;
 		this.start = null;
-		this.end = null;
 
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
@@ -137,7 +125,7 @@ Module.register("MMM-BiathlonResults",{
 			brDescription.innerHTML = this.description;
 
 			wrapper.appendChild(brDescription);
-
+			
 			var brLocation = document.createElement('div');
 			brLocation.className = "light small location";
 
@@ -167,11 +155,7 @@ Module.register("MMM-BiathlonResults",{
 			brDate.appendChild(spacer);
 
 			var dateText = document.createElement("span");
-			if(moment(this.start).isAfter(moment())) {
-				dateText.innerHTML = " " + this.translate("STARTED") + " " + moment(this.start).fromNow();
-			} else {
-				dateText.innerHTML = " " + this.translate("ENDED") + " " + moment(this.end).fromNow();
-			}
+			dateText.innerHTML = " " + this.capFirst(moment(this.start).fromNow());
 			brDate.appendChild(dateText);
 
 			wrapper.appendChild(brDate);
@@ -188,9 +172,9 @@ Module.register("MMM-BiathlonResults",{
 		} else if (notification === "DATA") {
 			this.processBR(payload);
 		} else if (notification === "ERROR") {
-			Log.error(this.name + ": Do not access to data (" + payload + " HTTP error).");
+			Log.error(this.name + ": Do not access to data (" + payload + ").");
 		} else if (notification === "DEBUG") {
-			Log.error(this.name + " (debug): " + payload);
+			Log.error(this.name + " : Debug (" + payload + ")");
 		}
 	},
 
@@ -200,17 +184,21 @@ Module.register("MMM-BiathlonResults",{
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
-
+		
 		this.title = data.results.CupName + " (" + data.results.RaceCount + "/" + data.results.TotalRaces + ")";
 		this.results = data.results.Rows;
+		
+		this.config.showNextEvent
 
 		if(this.config.showNextEvent) {
-			this.events = data.events.filter(event => moment(event.EndDate).isAfter(moment())).filter(event => event.EventId.includes(this.config.cupid.split("__")[0]));
-
-			this.description = this.events[0].Description;
-			this.location = this.events[0].Organizer + " (" + this.events[0].NatLong + ")";
-			this.start = this.events[0].StartDate;
-			this.end = this.events[0].EndDate;
+			if (typeof data.events === "undefined" || typeof data.competitions === "undefined") {
+				Log.error(this.name + ": Do not receive usable data for next event (this information will be hidden).");
+				this.config.showNextEvent = false;
+			} else {
+				this.description = data.competitions[0].ShortDescription;
+				this.location = data.events[0].Organizer + " (" + data.events[0].NatLong + ")";
+				this.start = data.competitions[0].StartTime;
+			}
 		}
 
 		this.loaded = true;
@@ -231,9 +219,9 @@ Module.register("MMM-BiathlonResults",{
 		}, nextLoad);
 	},
 
-	// Comparator proxy to compare two tasks by created date in ascending order
-	sortByCreated: function(taskA, taskB) {
-		return moment(taskA.created).diff(moment(taskB.created));
+	// Capitalize the first letter of a string
+	capFirst: function (string) {
+		return string.charAt(0).toUpperCase() + string.slice(1);
 	}
 
 });
