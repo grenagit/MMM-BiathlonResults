@@ -129,8 +129,8 @@ The following properties can be configured:
 
 ## Todo
 
-[x] Add next competition
-[ ] Add multiple cups
+- [x] Add next competition
+- [ ] Add multiple cups
 
 ## License
 
