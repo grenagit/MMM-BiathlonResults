@@ -46,7 +46,7 @@ Module.register("MMM-BiathlonResults", {
 		Log.info("Starting module: " + this.name);
 
 		moment.updateLocale(config.language);
-		
+
 		this.resultsItems = [];
 		this.activeItem = 0;
 		this.timerUpdate = null;
@@ -71,7 +71,7 @@ Module.register("MMM-BiathlonResults", {
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
-		
+
 		if(this.config.showTitle) {
 			var brTitle = document.createElement('div');
 			brTitle.className = "dimmed light small title";
@@ -184,9 +184,9 @@ Module.register("MMM-BiathlonResults", {
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
-		
+
 		var resultsItems = [];
-		
+
 		for(let i = 0; i < data.length; i++) {
 			var title = data[i].results.CupName + " (" + data[i].results.RaceCount + "/" + data[i].results.TotalRaces + ")";
 			var results = data[i].results.Rows;
@@ -201,10 +201,10 @@ Module.register("MMM-BiathlonResults", {
 					var start = data[i].competitions[0].StartTime;
 				}
 			}
-			
+
 			resultsItems.push({"title": title, "results": results, "description": description, "location": location, "start": start});
 		}
-		
+
 		this.resultsItems = resultsItems;
 
 		this.loaded = true;
@@ -216,25 +216,25 @@ Module.register("MMM-BiathlonResults", {
 	// Schedule visual update
 	scheduleUpdate: function() {
 		clearInterval(this.timerUpdate);
-		
+
 		var self = this;
 		this.timerUpdate = setInterval(function() {
 			self.activeItem++;
 			if(self.activeItem >= self.resultsItems.length) {
 				self.activeItem = 0;
 			}
-			
+
 			self.updateDom(self.config.animationSpeed);
 		}, this.config.updateInterval);
 	},
-	
+
 	// Schedule next data reload
 	scheduleReload: function(delay) {
 		var nextLoad = this.config.reloadInterval;
 		if (typeof delay !== "undefined" && delay >= 0) {
 			nextLoad = delay;
 		}
-		
+
 		clearInterval(this.timerReload);
 
 		var self = this;

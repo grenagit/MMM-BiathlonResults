@@ -49,9 +49,9 @@ module.exports = NodeHelper.create({
 		var options = {
 			method: 'GET'
 		};
-		
+
 		var datas = [];
-		
+
 		var lastResults = Promise.all(self.config.cupid.map(function(cup) {
 			return fetch(self.getUrl("results", cup), options);
 		}))
@@ -73,9 +73,9 @@ module.exports = NodeHelper.create({
 		.catch(function(error) {
 			self.sendSocketNotification("ERROR", error);
 		});
-		
+
 		if(self.config.showNextEvent) {
-		
+
 			lastResults
 			.then(function() {
 				return fetch(self.getUrl("events"), options);
@@ -120,12 +120,12 @@ module.exports = NodeHelper.create({
 			});
 
 		} else {
-		
+
 			lastResults
 			.then(function() {
 				self.sendSocketNotification("DATA", datas);
 			});
-			
+
 		}
 		
 	},
