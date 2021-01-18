@@ -8,14 +8,15 @@
  * MIT Licensed.
  */
 
-Module.register("MMM-BiathlonResults",{
+Module.register("MMM-BiathlonResults", {
 
 	// Default module config
 	defaults: {
-		cupid: "",
+		cupid: [],
 		seasonid: "2021",
-		eventid: "",
-		updateInterval: 60 * 60 * 1000, // 1 hour
+		eventid: [],
+		reloadInterval: 60 * 60 * 1000, // 1 hour
+		updateInterval: 10 * 1000, // 10 seconds
 		animationSpeed: 1000, // 1 second
 		maximumEntries: 10,
 		showTitle: true,
@@ -45,15 +46,14 @@ Module.register("MMM-BiathlonResults",{
 		Log.info("Starting module: " + this.name);
 
 		moment.updateLocale(config.language);
-
-		this.title = null;
-		this.results = [];
-		this.description = null;
-		this.location = null;
-		this.start = null;
+		
+		this.resultsItems = [];
+		this.activeItem = 0;
+		this.timerUpdate = null;
+		this.timerReload = null;
 
 		this.loaded = false;
-		this.scheduleUpdate(this.config.initialLoadDelay);
+		this.scheduleReload(this.config.initialLoadDelay);
 	},
 
 	// Override dom generator
@@ -71,11 +71,11 @@ Module.register("MMM-BiathlonResults",{
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
-
+		
 		if(this.config.showTitle) {
 			var brTitle = document.createElement('div');
 			brTitle.className = "dimmed light small title";
-			brTitle.innerHTML = this.title;
+			brTitle.innerHTML = this.resultsItems[this.activeItem].title;
 
 			wrapper.appendChild(brTitle);
 		}
@@ -83,32 +83,32 @@ Module.register("MMM-BiathlonResults",{
 		var resultsWrapper = document.createElement("table");
 		resultsWrapper.className = "small results";
 
-		for (let i = 0; (i < this.config.maximumEntries && i < this.results.length); i++) {
+		for (let i = 0; (i < this.config.maximumEntries && i < this.resultsItems[this.activeItem].results.length); i++) {
 
 			var resultWrapper = document.createElement("tr");
 			resultWrapper.className = "normal";
 
 			var rankWrapper = document.createElement("td");
 			rankWrapper.className = "rank";
-			rankWrapper.innerHTML = this.results[i].Rank;
+			rankWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].Rank;
 
 			resultWrapper.appendChild(rankWrapper);
 
 			var nationWrapper = document.createElement("td");
 			nationWrapper.className = "nation light";
-			nationWrapper.innerHTML = this.results[i].Nat.toLowerCase();
+			nationWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].Nat.toLowerCase();
 
 			resultWrapper.appendChild(nationWrapper);
 
 			var nameWrapper = document.createElement("td");
 			nameWrapper.className = "name bright";
-			nameWrapper.innerHTML = this.results[i].ShortName.toLowerCase();
+			nameWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].ShortName.toLowerCase();
 
 			resultWrapper.appendChild(nameWrapper);
 
 			var scoreWrapper = document.createElement("td");
 			scoreWrapper.className = "score light";
-			scoreWrapper.innerHTML = this.results[i].Score;
+			scoreWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].Score;
 
 			resultWrapper.appendChild(scoreWrapper);
 
@@ -122,7 +122,7 @@ Module.register("MMM-BiathlonResults",{
 
 			var brDescription = document.createElement('div');
 			brDescription.className = "dimmed light small description";
-			brDescription.innerHTML = this.description;
+			brDescription.innerHTML = this.resultsItems[this.activeItem].description;
 
 			wrapper.appendChild(brDescription);
 			
@@ -138,7 +138,7 @@ Module.register("MMM-BiathlonResults",{
 			brLocation.appendChild(spacer);
 
 			var locationText = document.createElement("span");
-			locationText.innerHTML = " " + this.location;
+			locationText.innerHTML = " " + this.resultsItems[this.activeItem].location;
 			brLocation.appendChild(locationText);
 
 			wrapper.appendChild(brLocation);
@@ -155,7 +155,7 @@ Module.register("MMM-BiathlonResults",{
 			brDate.appendChild(spacer);
 
 			var dateText = document.createElement("span");
-			dateText.innerHTML = " " + this.capFirst(moment(this.start).fromNow());
+			dateText.innerHTML = " " + this.capFirst(moment(this.resultsItems[this.activeItem].start).fromNow());
 			brDate.appendChild(dateText);
 
 			wrapper.appendChild(brDate);
@@ -177,44 +177,68 @@ Module.register("MMM-BiathlonResults",{
 			Log.error(this.name + " : Debug (" + payload + ")");
 		}
 	},
-
+	
 	// Use the received data to set the various values before update DOM
 	processBR: function(data) {
-		if (!data || typeof data.results === "undefined") {
+		if (!data || typeof data[0].results === "undefined") {
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
 		
-		this.title = data.results.CupName + " (" + data.results.RaceCount + "/" + data.results.TotalRaces + ")";
-		this.results = data.results.Rows;
+		var resultsItems = [];
 		
-		this.config.showNextEvent
-
-		if(this.config.showNextEvent) {
-			if (typeof data.events === "undefined" || typeof data.competitions === "undefined") {
-				Log.error(this.name + ": Do not receive usable data for next event (this information will be hidden).");
-				this.config.showNextEvent = false;
-			} else {
-				this.description = data.competitions[0].ShortDescription;
-				this.location = data.events[0].Organizer + " (" + data.events[0].NatLong + ")";
-				this.start = data.competitions[0].StartTime;
+		for(let i = 0; i < data.length; i++) {
+			var title = data[i].results.CupName + " (" + data[i].results.RaceCount + "/" + data[i].results.TotalRaces + ")";
+			var results = data[i].results.Rows;
+			
+			if(this.config.showNextEvent) {
+				if (typeof data[i].events === "undefined" || typeof data[i].competitions === "undefined") {
+					Log.error(this.name + ": Do not receive usable data for next event (this information will be hidden).");
+					this.config.showNextEvent = false;
+				} else {
+					var description = data[i].competitions[0].ShortDescription;
+					var location = data[i].events[0].Organizer + " (" + data[i].events[0].NatLong + ")";
+					var start = data[i].competitions[0].StartTime;
+				}
 			}
+			
+			resultsItems.push({"title": title, "results": results, "description": description, "location": location, "start": start});
 		}
+		
+		this.resultsItems = resultsItems;
 
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
 		this.scheduleUpdate();
+		this.scheduleReload();
 	},
 
-	// Schedule next update
-	scheduleUpdate: function(delay) {
-		var nextLoad = this.config.updateInterval;
+	// Schedule visual update
+	scheduleUpdate: function() {
+		clearInterval(this.timerUpdate);
+		
+		var self = this;
+		this.timerUpdate = setInterval(function() {
+			self.activeItem++;
+			if(self.activeItem >= self.resultsItems.length) {
+				self.activeItem = 0;
+			}
+			
+			self.updateDom(self.config.animationSpeed);
+		}, this.config.updateInterval);
+	},
+	
+	// Schedule next data reload
+	scheduleReload: function(delay) {
+		var nextLoad = this.config.reloadInterval;
 		if (typeof delay !== "undefined" && delay >= 0) {
 			nextLoad = delay;
 		}
+		
+		clearInterval(this.timerReload);
 
 		var self = this;
-		setTimeout(function() {
+		this.timerReload = setTimeout(function() {
 			self.sendSocketNotification('CONFIG', self.config);
 		}, nextLoad);
 	},

@@ -16,7 +16,7 @@ const moment = require('moment');
 
 module.exports = NodeHelper.create({
 
-	getUrl: function(type) {
+	getUrl: function(type, id = null) {
 		var self = this;
 
 		var currentTime = Math.floor(Date.now() / 1000);
@@ -26,7 +26,7 @@ module.exports = NodeHelper.create({
 		switch(type) {
 			case "results":
 				url += self.config.cupResultsEndpoint;
-				url += "?cupid=" + self.config.cupid;
+				url += "?cupid=" + id;
 				break;
 
 			case "events":
@@ -36,7 +36,7 @@ module.exports = NodeHelper.create({
 
 			case "competitions":
 				url += self.config.competitionsEndpoint;
-				url += "?eventid=" + self.config.eventid;
+				url += "?eventid=" + id;
 				break;
 		}
 
@@ -49,9 +49,11 @@ module.exports = NodeHelper.create({
 		var options = {
 			method: 'GET'
 		};
-
-		Promise.all(apis.map(function(api) {
-			return fetch(self.getUrl(api), options);
+		
+		var datas = [];
+		
+		var lastResults = Promise.all(self.config.cupid.map(function(cup) {
+			return fetch(self.getUrl("results", cup), options);
 		}))
 		.then(function(responses) {
 			return Promise.all(responses.map(function(response) {
@@ -62,39 +64,70 @@ module.exports = NodeHelper.create({
 				}
 			}));
 		})
+		.then(function(result) {
+			for(let i = 0; i < self.config.cupid.length; i++) {
+				datas[i] = {};
+				datas[i].results = result[i];
+			}
+		})
 		.catch(function(error) {
 			self.sendSocketNotification("ERROR", error);
-		})
-		.then(function(result) {
-			var lastResults = result[0];
-
-			if(self.config.showNextEvent) {
-
-				var nextEvents = result[1].filter(event => moment(event.EndDate).endOf('day').isAfter(moment().endOf('day'))).filter(event => event.EventId.substr(0, 12) == self.config.cupid.substr(0, 12));
-				self.config.eventid = nextEvents[0].EventId;
-
-				fetch(self.getUrl("competitions"), options)
-				.then(function(response) {
-					if (response.ok) {
+		});
+		
+		if(self.config.showNextEvent) {
+		
+			lastResults
+			.then(function() {
+				return fetch(self.getUrl("events"), options);
+			})
+			.then(function(response) {
+				if (response.ok) { 
+					return response.json();
+				} else {
+					return Promise.reject(response.status + " HTTP error for " + response.url);
+				}
+			})
+			.then(function(result) {
+				for(let i = 0; i < self.config.cupid.length; i++) {
+					datas[i].events = result.filter(event => moment(event.EndDate).endOf('day').isAfter(moment().endOf('day'))).filter(event => event.EventId.substr(0, 12) == self.config.cupid[i].substr(0, 12));
+					self.config.eventid[i] = datas[i].events[0].EventId;
+				}
+			})
+			.then(function() {
+				return Promise.all(self.config.eventid.map(function(event) {
+					return fetch(self.getUrl("competitions", event), options);
+				}));
+			})
+			.then(function(responses) {
+				return Promise.all(responses.map(function(response) {
+					if (response.ok) { 
 						return response.json();
 					} else {
 						return Promise.reject(response.status + " HTTP error for " + response.url);
 					}
-				})
-				.catch(function(error) {
-					self.sendSocketNotification("ERROR", error);
-					self.sendSocketNotification("DATA", {"results": lastResults});
-				})
-				.then(function(body) {
-					var nextCompetitions = body.filter(competition => moment(competition.StartTime).isAfter(moment())).filter(competition => competition.RaceId.substr(14, 2) == self.config.cupid.substr(14, 2));
+				}));
+			})
+			.then(function(result) {
+				for(let i = 0; i < self.config.cupid.length; i++) {
+					datas[i].competitions = result[i].filter(competition => moment(competition.StartTime).isAfter(moment())).filter(competition => competition.RaceId.substr(14, 2) == self.config.cupid[i].substr(14, 2));
+				}
+			})
+			.then(function() {
+				self.sendSocketNotification("DATA", datas);
+			})
+			.catch(function(error) {
+				self.sendSocketNotification("ERROR", error);
+			});
 
-					self.sendSocketNotification("DATA", {"results": lastResults, "events": nextEvents, "competitions": nextCompetitions});
-				})
-
-			} else {
-				self.sendSocketNotification("DATA", {"results": lastResults});
-			}
-		});
+		} else {
+		
+			lastResults
+			.then(function() {
+				self.sendSocketNotification("DATA", datas);
+			});
+			
+		}
+		
 	},
 
 	socketNotificationReceived: function(notification, payload) {
@@ -103,11 +136,7 @@ module.exports = NodeHelper.create({
 		if (notification === "CONFIG") {
 			self.config = payload;
 			self.sendSocketNotification("STARTED", true);
-			if(self.config.showNextEvent) {
-				self.getData(["results", "events"]);
-			} else {
-				self.getData(["results"]);
-			}
+			self.getData();
 		}
 	}
 });
