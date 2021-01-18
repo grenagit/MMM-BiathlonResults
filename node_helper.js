@@ -1,7 +1,7 @@
 'use strict';
 
 /* Magic Mirror
- * Module: MMM-MarineWeather
+ * Module: MMM-BiathlonResults
  *
  * Magic Mirror By Michael Teeuw https://magicmirror.builders
  * MIT Licensed.
@@ -16,7 +16,7 @@ const moment = require('moment');
 
 module.exports = NodeHelper.create({
 
-	getUrl: function(type, id = null) {
+	getUrl: function(type, id) {
 		var self = this;
 
 		var currentTime = Math.floor(Date.now() / 1000);
@@ -31,7 +31,7 @@ module.exports = NodeHelper.create({
 
 			case "events":
 				url += self.config.eventsEndpoint;
-				url += "?seasonid=" + self.config.seasonid;
+				url += "?seasonid=" + id;
 				break;
 
 			case "competitions":
@@ -43,7 +43,7 @@ module.exports = NodeHelper.create({
 		return url;
 	},
 
-	getData: function(apis) {
+	getData: function() {
 		var self = this;
 
 		var options = {
@@ -78,7 +78,7 @@ module.exports = NodeHelper.create({
 
 			lastResults
 			.then(function() {
-				return fetch(self.getUrl("events"), options);
+				return fetch(self.getUrl("events", self.config.seasonid), options);
 			})
 			.then(function(response) {
 				if (response.ok) { 
