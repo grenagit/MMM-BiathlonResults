@@ -32,12 +32,12 @@ Module.register("MMM-BiathlonResults", {
 	},
 
 	// Define required styles
-	getStyles: function () {
+	getStyles: function() {
 		return ["MMM-BiathlonResults.css", "font-awesome.css"];
 	},
 
 	// Define required scripts
-	getScripts: function () {
+	getScripts: function() {
 		return ["moment.js"];
 	},
 
@@ -60,13 +60,13 @@ Module.register("MMM-BiathlonResults", {
 	getDom: function() {
 		var wrapper = document.createElement("div");
 
-		if (this.config.cupid === "") {
+		if(this.config.cupid === "") {
 			wrapper.innerHTML = "Please set the correct Biathlon <i>cupid</i> in the config for module: " + this.name + ".";
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
 
-		if (!this.loaded) {
+		if(!this.loaded) {
 			wrapper.innerHTML = this.translate("LOADING");
 			wrapper.className = "dimmed light small";
 			return wrapper;
@@ -83,7 +83,7 @@ Module.register("MMM-BiathlonResults", {
 		var resultsWrapper = document.createElement("table");
 		resultsWrapper.className = "small results";
 
-		for (let i = 0; (i < this.config.maximumEntries && i < this.resultsItems[this.activeItem].results.length); i++) {
+		for(let i = 0; i < this.config.maximumEntries && i < this.resultsItems[this.activeItem].results.length; i++) {
 
 			var resultWrapper = document.createElement("tr");
 			resultWrapper.className = "normal";
@@ -167,20 +167,20 @@ Module.register("MMM-BiathlonResults", {
 
 	// Request new data from biathlonresults.com with node_helper
 	socketNotificationReceived: function(notification, payload) {
-		if (notification === "STARTED") {
+		if(notification === "STARTED") {
 			this.updateDom(this.config.animationSpeed);
-		} else if (notification === "DATA") {
+		} else if(notification === "DATA") {
 			this.processBR(payload);
-		} else if (notification === "ERROR") {
+		} else if(notification === "ERROR") {
 			Log.error(this.name + ": Do not access to data (" + payload + ").");
-		} else if (notification === "DEBUG") {
+		} else if(notification === "DEBUG") {
 			Log.error(this.name + " : Debug (" + payload + ")");
 		}
 	},
 	
 	// Use the received data to set the various values before update DOM
 	processBR: function(data) {
-		if (!data || typeof data[0].results === "undefined") {
+		if(!data || typeof data[0].results === "undefined") {
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
@@ -192,7 +192,7 @@ Module.register("MMM-BiathlonResults", {
 			var results = data[i].results.Rows;
 			
 			if(this.config.showNextEvent) {
-				if (typeof data[i].events === "undefined" || typeof data[i].competitions === "undefined") {
+				if(typeof data[i].events === "undefined" || typeof data[i].competitions === "undefined") {
 					Log.error(this.name + ": Do not receive usable data for next event (this information will be hidden).");
 					this.config.showNextEvent = false;
 				} else {
@@ -231,7 +231,7 @@ Module.register("MMM-BiathlonResults", {
 	// Schedule next data reload
 	scheduleReload: function(delay) {
 		var nextLoad = this.config.reloadInterval;
-		if (typeof delay !== "undefined" && delay >= 0) {
+		if(typeof delay !== "undefined" && delay >= 0) {
 			nextLoad = delay;
 		}
 

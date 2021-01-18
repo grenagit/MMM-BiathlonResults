@@ -57,7 +57,7 @@ module.exports = NodeHelper.create({
 		}))
 		.then(function(responses) {
 			return Promise.all(responses.map(function(response) {
-				if (response.ok) { 
+				if(response.ok) { 
 					return response.json();
 				} else {
 					return Promise.reject(response.status + " HTTP error for " + response.url);
@@ -81,7 +81,7 @@ module.exports = NodeHelper.create({
 				return fetch(self.getUrl("events", self.config.seasonid), options);
 			})
 			.then(function(response) {
-				if (response.ok) { 
+				if(response.ok) { 
 					return response.json();
 				} else {
 					return Promise.reject(response.status + " HTTP error for " + response.url);
@@ -100,7 +100,7 @@ module.exports = NodeHelper.create({
 			})
 			.then(function(responses) {
 				return Promise.all(responses.map(function(response) {
-					if (response.ok) { 
+					if(response.ok) { 
 						return response.json();
 					} else {
 						return Promise.reject(response.status + " HTTP error for " + response.url);
