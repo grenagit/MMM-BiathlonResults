@@ -15,8 +15,8 @@ Module.register("MMM-BiathlonResults", {
 		cupid: [],
 		seasonid: "2021",
 		eventid: [],
-		reloadInterval: 60 * 60 * 1000, // 1 hour
-		updateInterval: 10 * 1000, // 10 seconds
+		updateInterval: 60 * 60 * 1000, // 1 hour
+		transitionInterval: 10 * 1000, // 10 seconds
 		animationSpeed: 1000, // 1 second
 		maximumEntries: 10,
 		showTitle: true,
@@ -49,18 +49,18 @@ Module.register("MMM-BiathlonResults", {
 
 		this.resultsItems = [];
 		this.activeItem = 0;
+		this.timerTransition = null;
 		this.timerUpdate = null;
-		this.timerReload = null;
 
 		this.loaded = false;
-		this.scheduleReload(this.config.initialLoadDelay);
+		this.scheduleUpdate(this.config.initialLoadDelay);
 	},
 
 	// Override dom generator
 	getDom: function() {
 		var wrapper = document.createElement("div");
 
-		if(this.config.cupid === "") {
+		if(this.config.cupid === []) {
 			wrapper.innerHTML = "Please set the correct Biathlon <i>cupid</i> in the config for module: " + this.name + ".";
 			wrapper.className = "dimmed light small";
 			return wrapper;
@@ -209,36 +209,36 @@ Module.register("MMM-BiathlonResults", {
 
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
+		this.scheduleTransition();
 		this.scheduleUpdate();
-		this.scheduleReload();
 	},
 
-	// Schedule visual update
-	scheduleUpdate: function() {
-		clearInterval(this.timerUpdate);
+	// Schedule next transition
+	scheduleTransition: function() {
+		clearInterval(this.timerTransition);
 
 		var self = this;
-		this.timerUpdate = setInterval(function() {
+		this.timerTransition = setInterval(function() {
 			self.activeItem++;
 			if(self.activeItem >= self.resultsItems.length) {
 				self.activeItem = 0;
 			}
 
 			self.updateDom(self.config.animationSpeed);
-		}, this.config.updateInterval);
+		}, this.config.transitionInterval);
 	},
 
-	// Schedule next data reload
-	scheduleReload: function(delay) {
-		var nextLoad = this.config.reloadInterval;
+	// Schedule next upload
+	scheduleUpdate: function(delay) {
+		var nextLoad = this.config.updateInterval;
 		if(typeof delay !== "undefined" && delay >= 0) {
 			nextLoad = delay;
 		}
 
-		clearInterval(this.timerReload);
+		clearInterval(this.timerUpdate);
 
 		var self = this;
-		this.timerReload = setTimeout(function() {
+		this.timerUpdate = setTimeout(function() {
 			self.sendSocketNotification('CONFIG', self.config);
 		}, nextLoad);
 	},
