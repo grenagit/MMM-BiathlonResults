@@ -89,7 +89,7 @@ module.exports = NodeHelper.create({
 			})
 			.then(function(result) {
 				for(let i = 0; i < self.config.cupid.length; i++) {
-					datas[i].events = result.filter(event => moment(event.EndDate).endOf('day').isAfter(moment().endOf('day'))).filter(event => event.EventId.substr(0, 12) == self.config.cupid[i].substr(0, 12));
+					datas[i].events = result.filter(event => moment(event.EndDate).endOf('day').isSameOrAfter(moment().endOf('day'))).filter(event => event.EventId.substr(0, 12) == self.config.cupid[i].substr(0, 12));
 					self.config.eventid[i] = datas[i].events[0].EventId;
 				}
 			})
