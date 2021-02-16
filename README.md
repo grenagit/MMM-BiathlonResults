@@ -63,7 +63,7 @@ modules: [
 		module: "MMM-BiathlonResults",
 		position: "top_left",
 		config: {
-			cupid: ""
+			cupid: [""]
 		}
 	}
 ]
@@ -77,16 +77,17 @@ The following properties can be configured:
 | ---------------------------- | -----------
 | `cupid`                      | The cup ID, see *list of cups* below. <br><br>  This value is **REQUIRED**
 | `seasonid`                   | The season ID. <br><br>   **Default value:** `'2021'` (2020 / 2021)
-| `eventid`                    | The event ID. <br><br>   **Default value:** `''` ()
+| `eventid`                    | The event ID. <br><br>   **Default value:** `[]`
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `60 * 60 * 1000` (1 hour)
+| `transitionInterval`         | Display time of one cup before moving to the next. (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `10 * 1000` (10 seconds)
 | `animationSpeed`             | Speed of the update animation. (Milliseconds) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `1000` (1 second)
 | `maximumEntries`             | The maximum number of ranks shown. <br><br> **Possible values:** `0` - `100` <br> **Default value:** `10`
-| `showTitle`									 | Show the title of cup results <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
+| `showTitle`                  | Show the title of cup results <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `showNextEvent`              | Show the next event. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `initialLoadDelay`           | The initial delay before loading. If you have multiple modules that use the same API key, you might want to delay one of the requests. (Milliseconds) <br><br> **Possible values:** `1000` - `5000` <br> **Default value:**  `0`
 | `retryDelay`                 | The delay before retrying after a request failure. (Milliseconds) <br><br> **Possible values:** `1000` - `60000` <br> **Default value:**  `2500` (2,5 seconds)
 | `apiBase`                    | The BiathlonResults API base URL. <br><br> **Default value:**  `'https://biathlonresults.com/'`
-| `cupResultsEndpoint`            | The BiathlonResults CupResults API end point. <br><br> **Default value:**  `'modules/sportapi/api/cupresults'`
+| `cupResultsEndpoint`         | The BiathlonResults CupResults API end point. <br><br> **Default value:**  `'modules/sportapi/api/cupresults'`
 | `eventsEndpoint`             | The BiathlonResults Events API end point. <br><br> **Default value:**  `'modules/sportapi/api/events'`
 | `competitionsEndpoint`       | The BiathlonResults Competitions API end point. <br><br> **Default value:**  `'modules/sportapi/api/competitions'`
 
@@ -130,7 +131,7 @@ The following properties can be configured:
 ## Todo
 
 - [x] Add next competition
-- [ ] Add multiple cups
+- [x] Add multiple cups
 
 ## License
 
