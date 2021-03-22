@@ -40,7 +40,7 @@ Module.register("MMM-BiathlonResults", {
 	getScripts: function() {
 		return ["moment.js"];
 	},
-
+	
 	// Define start sequence
 	start: function() {
 		Log.info("Starting module: " + this.name);
@@ -161,6 +161,16 @@ Module.register("MMM-BiathlonResults", {
 			wrapper.appendChild(brDate);
 
 		}
+		
+		if(this.resultsItems[this.activeItem].finished) {
+
+			var brDescription = document.createElement('div');
+			brDescription.className = "dimmed light small description";
+			brDescription.innerHTML = this.capFirst(this.resultsItems[this.activeItem].info.toLowerCase());
+
+			wrapper.appendChild(brDescription);
+
+		}
 
 		return wrapper;
 	},
@@ -174,7 +184,7 @@ Module.register("MMM-BiathlonResults", {
 		} else if(notification === "ERROR") {
 			Log.error(this.name + ": Do not access to data (" + payload + ").");
 		} else if(notification === "DEBUG") {
-			Log.error(this.name + " : Debug (" + payload + ")");
+			Log.debug(payload);
 		}
 	},
 	
@@ -189,7 +199,14 @@ Module.register("MMM-BiathlonResults", {
 
 		for(let i = 0; i < data.length; i++) {
 			var title = data[i].results.CupName + " (" + data[i].results.RaceCount + "/" + data[i].results.TotalRaces + ")";
+			var info = data[i].results.CupInfo;
 			var results = data[i].results.Rows;
+			
+			if(data[i].results.RaceCount < data[i].results.TotalRaces) {
+				var finished = false;
+			} else {
+				var finished = true;			
+			}
 			
 			if(this.config.showNextEvent) {
 				if(typeof data[i].events === "undefined" || typeof data[i].competitions === "undefined") {
@@ -202,7 +219,7 @@ Module.register("MMM-BiathlonResults", {
 				}
 			}
 
-			resultsItems.push({"title": title, "results": results, "description": description, "location": location, "start": start});
+			resultsItems.push({"title": title, "info": info, "results": results, "description": description, "location": location, "start": start, "finished": finished});
 		}
 
 		this.resultsItems = resultsItems;

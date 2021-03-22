@@ -57,7 +57,7 @@ module.exports = NodeHelper.create({
 		}))
 		.then(function(responses) {
 			return Promise.all(responses.map(function(response) {
-				if(response.ok) { 
+				if(response.ok) {
 					return response.json();
 				} else {
 					return Promise.reject(response.status + " HTTP error for " + response.url);
@@ -90,7 +90,11 @@ module.exports = NodeHelper.create({
 			.then(function(result) {
 				for(let i = 0; i < self.config.cupid.length; i++) {
 					datas[i].events = result.filter(event => moment(event.EndDate).endOf('day').isSameOrAfter(moment().endOf('day'))).filter(event => event.EventId.substr(0, 12) == self.config.cupid[i].substr(0, 12));
-					self.config.eventid[i] = datas[i].events[0].EventId;
+					if(datas[i].events && datas[i].events.length > 0) {
+						self.config.eventid[i] = datas[i].events[0].EventId;
+					} else {
+						return Promise.reject("No next event for " + self.config.cupid[i]);
+					}
 				}
 			})
 			.then(function() {
@@ -117,6 +121,7 @@ module.exports = NodeHelper.create({
 			})
 			.catch(function(error) {
 				self.sendSocketNotification("ERROR", error);
+				self.sendSocketNotification("DATA", datas);
 			});
 
 		} else {
