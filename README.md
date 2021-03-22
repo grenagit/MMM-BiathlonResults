@@ -75,9 +75,9 @@ The following properties can be configured:
 
 | Option                       | Description
 | ---------------------------- | -----------
-| `cupid`                      | The cup ID, see *list of cups* below. <br><br>  This value is **REQUIRED**
-| `seasonid`                   | The season ID. <br><br>   **Default value:** `'2021'` (2020 / 2021)
-| `eventid`                    | The event ID. <br><br>   **Default value:** `[]`
+| `cupid`                      | The list of cups ID, see *list of cups* below. <br><br> This value is **REQUIRED**
+| `seasonid`                   | The season ID. <br><br> **Default value:** `'2021'` (2020 / 2021)
+| `eventid`                    | The list of events ID. <br><br> **Default value:** `[]`
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `60 * 60 * 1000` (1 hour)
 | `transitionInterval`         | Display time of one cup before moving to the next. (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `10 * 1000` (10 seconds)
 | `animationSpeed`             | Speed of the update animation. (Milliseconds) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `1000` (1 second)
