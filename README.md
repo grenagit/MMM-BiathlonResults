@@ -76,7 +76,7 @@ The following properties can be configured:
 | Option                       | Description
 | ---------------------------- | -----------
 | `cupid`                      | The list of cups ID, see *list of cups* below. <br><br> This value is **REQUIRED**
-| `seasonid`                   | The season ID. <br><br> **Default value:** `'2021'` (2020 / 2021)
+| `seasonid`                   | The season ID. <br><br> **Default value:** `'2122'` (2021 / 2022)
 | `eventid`                    | The list of events ID. <br><br> **Default value:** `[]`
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `60 * 60 * 1000` (1 hour)
 | `transitionInterval`         | Display time of one cup before moving to the next. (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `10 * 1000` (10 seconds)
@@ -93,40 +93,38 @@ The following properties can be configured:
 
 #### List of cups (Season 2020 / 2021)
 
-| Name                               | ID
-| ---------------------------------- | -----------
-| Women's World Cup Total Score      | BT2021SWRLCP__SWTS
-| Women's World Cup Sprint Score     | BT2021SWRLCP__SWSP
-| Women's World Cup Pursuit Score    | BT2021SWRLCP__SWPU
-| Women's World Cup Individual Score | BT2021SWRLCP__SWIN
-| Women's World Cup Mass Start Score | BT2021SWRLCP__SWMS
-| Women's World Cup Relay Score      | BT2021SWRLCP__SWRL
-| Women's Nations Cup Score          | BT2021SWRLCP__SWNC
-| Men's World Cup Total Score        | BT2021SWRLCP__SMTS
-| Men's World Cup Sprint Score       | BT2021SWRLCP__SMSP
-| Men's World Cup Pursuit Score      | BT2021SWRLCP__SMPU
-| Men's World Cup Individual Score   | BT2021SWRLCP__SMIN
-| Men's World Cup Mass Start Score   | BT2021SWRLCP__SMMS
-| Men's World Cup Relay Score        | BT2021SWRLCP__SMRL
-| Men's Nations Cup Score            | BT2021SWRLCP__SMNC
-| World Cup Mixed Relay Score        | BT2021SWRLCP__MXRL
-| Women's IBU Cup Total Score        | BT2021SIBUCP__SWTS
-| Women's IBU Cup Sprint Score       | BT2021SIBUCP__SWSP
-| Women's IBU Cup Pursuit Score      | BT2021SIBUCP__SWPU
-| Women's IBU Cup Individual Score   | BT2021SIBUCP__SWIN
-| Women's IBU Cup Super Sprint Score | BT2021SIBUCP__SWSS
-| Women's IBU Cup Mass Start Score   | BT2021SIBUCP__SWMS
-| Women's IBU Cup Relay Score        | BT2021SIBUCP__SWRL
-| Women's IBU Cup Nations Cup Score  | BT2021SIBUCP__SWNC
-| Men's IBU Cup Total Score          | BT2021SIBUCP__SMTS
-| Men's IBU Cup Sprint Score         | BT2021SIBUCP__SMSP
-| Men's IBU Cup Pursuit Score        | BT2021SIBUCP__SMPU
-| Men's IBU Cup Individual Score     | BT2021SIBUCP__SMIN
-| Men's IBU Cup Super Sprint Score   | BT2021SIBUCP__SMSS
-| Men's IBU Cup Mass Start Score     | BT2021SIBUCP__SMMS
-| Men's IBU Cup Relay Score          | BT2021SIBUCP__SMRL
-| Men's IBU Cup Nations Cup Score    | BT2021SIBUCP__SMNC
-| IBU Cup Mixed Relay Score          | BT2021SIBUCP__MXRL
+|Name                              |ID                |
+|----------------------------------|------------------|
+|Women's World Cup Total Score     |BT2122SWRLCP__SWTS|
+|Women's World Cup Sprint Score    |BT2122SWRLCP__SWSP|
+|Women's World Cup Pursuit Score   |BT2122SWRLCP__SWPU|
+|Women's World Cup Individual Score|BT2122SWRLCP__SWIN|
+|Women's World Cup Mass Start Score|BT2122SWRLCP__SWMS|
+|Women's World Cup Relay Score     |BT2122SWRLCP__SWRL|
+|Women's Nations Cup Score         |BT2122SWRLCP__SWNC|
+|Men's World Cup Total Score       |BT2122SWRLCP__SMTS|
+|Men's World Cup Sprint Score      |BT2122SWRLCP__SMSP|
+|Men's World Cup Pursuit Score     |BT2122SWRLCP__SMPU|
+|Men's World Cup Individual Score  |BT2122SWRLCP__SMIN|
+|Men's World Cup Mass Start Score  |BT2122SWRLCP__SMMS|
+|Men's World Cup Relay Score       |BT2122SWRLCP__SMRL|
+|Men's Nations Cup Score           |BT2122SWRLCP__SMNC|
+|World Cup Mixed Relay Score       |BT2122SWRLCP__MXRL|
+|Women's IBU Cup Total Score       |BT2122SIBUCP__SWTS|
+|Women's IBU Cup Sprint Score      |BT2122SIBUCP__SWSP|
+|Women's IBU Cup Pursuit Score     |BT2122SIBUCP__SWPU|
+|Women's IBU Cup Individual Score  |BT2122SIBUCP__SWIN|
+|Women's IBU Cup Relay Score       |BT2122SIBUCP__SWRL|
+|Women's IBU Cup Nations Cup Score |BT2122SIBUCP__SWNC|
+|Men's IBU Cup Total Score         |BT2122SIBUCP__SMTS|
+|Men's IBU Cup Sprint Score        |BT2122SIBUCP__SMSP|
+|Men's IBU Cup Pursuit Score       |BT2122SIBUCP__SMPU|
+|Men's IBU Cup Individual Score    |BT2122SIBUCP__SMIN|
+|Men's IBU Cup Relay Score         |BT2122SIBUCP__SMRL|
+|Men's IBU Cup Nations Cup Score   |BT2122SIBUCP__SMNC|
+|IBU Cup Mixed Relay Score         |BT2122SIBUCP__MXRL|
+
+> [Source](https://biathlonresults.com/modules/sportapi/api/Cups?SeasonId=2122)
 
 ## Todo
 
