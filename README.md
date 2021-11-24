@@ -91,7 +91,7 @@ The following properties can be configured:
 | `eventsEndpoint`             | The BiathlonResults Events API end point. <br><br> **Default value:**  `'modules/sportapi/api/events'`
 | `competitionsEndpoint`       | The BiathlonResults Competitions API end point. <br><br> **Default value:**  `'modules/sportapi/api/competitions'`
 
-#### List of cups (Season 2020 / 2021)
+#### List of cups (Season 2021 / 2022)
 
 |Name                              |ID                |
 |----------------------------------|------------------|
