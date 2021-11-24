@@ -72,51 +72,55 @@ Module.register("MMM-BiathlonResults", {
 			return wrapper;
 		}
 
-		if(this.config.showTitle) {
-			var brTitle = document.createElement('div');
-			brTitle.className = "dimmed light small title";
-			brTitle.innerHTML = this.resultsItems[this.activeItem].title;
+		if(this.resultsItems[this.activeItem].results.length > 0) {
 
-			wrapper.appendChild(brTitle);
+			if(this.config.showTitle) {
+				var brTitle = document.createElement('div');
+				brTitle.className = "dimmed light small title";
+				brTitle.innerHTML = this.resultsItems[this.activeItem].title;
+
+				wrapper.appendChild(brTitle);
+			}
+
+			var resultsWrapper = document.createElement("table");
+			resultsWrapper.className = "small results";
+
+			for(let i = 0; i < this.config.maximumEntries && i < this.resultsItems[this.activeItem].results.length; i++) {
+
+				var resultWrapper = document.createElement("tr");
+				resultWrapper.className = "normal";
+
+				var rankWrapper = document.createElement("td");
+				rankWrapper.className = "rank";
+				rankWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].Rank;
+
+				resultWrapper.appendChild(rankWrapper);
+
+				var nationWrapper = document.createElement("td");
+				nationWrapper.className = "nation light";
+				nationWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].Nat.toLowerCase();
+
+				resultWrapper.appendChild(nationWrapper);
+
+				var nameWrapper = document.createElement("td");
+				nameWrapper.className = "name bright";
+				nameWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].ShortName.toLowerCase();
+
+				resultWrapper.appendChild(nameWrapper);
+
+				var scoreWrapper = document.createElement("td");
+				scoreWrapper.className = "score light";
+				scoreWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].Score;
+
+				resultWrapper.appendChild(scoreWrapper);
+
+				resultsWrapper.appendChild(resultWrapper);
+
+			}
+
+			wrapper.appendChild(resultsWrapper);
+		
 		}
-
-		var resultsWrapper = document.createElement("table");
-		resultsWrapper.className = "small results";
-
-		for(let i = 0; i < this.config.maximumEntries && i < this.resultsItems[this.activeItem].results.length; i++) {
-
-			var resultWrapper = document.createElement("tr");
-			resultWrapper.className = "normal";
-
-			var rankWrapper = document.createElement("td");
-			rankWrapper.className = "rank";
-			rankWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].Rank;
-
-			resultWrapper.appendChild(rankWrapper);
-
-			var nationWrapper = document.createElement("td");
-			nationWrapper.className = "nation light";
-			nationWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].Nat.toLowerCase();
-
-			resultWrapper.appendChild(nationWrapper);
-
-			var nameWrapper = document.createElement("td");
-			nameWrapper.className = "name bright";
-			nameWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].ShortName.toLowerCase();
-
-			resultWrapper.appendChild(nameWrapper);
-
-			var scoreWrapper = document.createElement("td");
-			scoreWrapper.className = "score light";
-			scoreWrapper.innerHTML = this.resultsItems[this.activeItem].results[i].Score;
-
-			resultWrapper.appendChild(scoreWrapper);
-
-			resultsWrapper.appendChild(resultWrapper);
-
-		}
-
-		wrapper.appendChild(resultsWrapper);
 
 		if(this.config.showNextEvent) {
 
@@ -184,7 +188,7 @@ Module.register("MMM-BiathlonResults", {
 		} else if(notification === "ERROR") {
 			Log.error(this.name + ": Do not access to data (" + payload + ").");
 		} else if(notification === "DEBUG") {
-			Log.debug(payload);
+			Log.log(payload);
 		}
 	},
 	
@@ -202,10 +206,10 @@ Module.register("MMM-BiathlonResults", {
 			var info = data[i].results.CupInfo;
 			var results = data[i].results.Rows;
 			
-			if(data[i].results.RaceCount < data[i].results.TotalRaces) {
+			if(data[i].results.RaceCount < data[i].results.TotalRaces || data[i].results.Rows.length == 0) {
 				var finished = false;
 			} else {
-				var finished = true;			
+				var finished = true;
 			}
 			
 			if(this.config.showNextEvent) {
