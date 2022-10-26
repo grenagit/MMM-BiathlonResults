@@ -13,7 +13,7 @@ Module.register("MMM-BiathlonResults", {
 	// Default module config
 	defaults: {
 		cupid: [],
-		seasonid: "2122",
+		seasonid: "2223",
 		eventid: [],
 		updateInterval: 60 * 60 * 1000, // 1 hour
 		transitionInterval: 10 * 1000, // 10 seconds
@@ -51,6 +51,8 @@ Module.register("MMM-BiathlonResults", {
 		this.activeItem = 0;
 		this.timerTransition = null;
 		this.timerUpdate = null;
+		
+		this.generateCupId();
 
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
@@ -267,6 +269,15 @@ Module.register("MMM-BiathlonResults", {
 	// Capitalize the first letter of a string
 	capFirst: function (string) {
 		return string.charAt(0).toUpperCase() + string.slice(1);
+	},
+	
+	// Generate complete cup ID with season ID
+	generateCupId: function() {
+		for(let i = 0; i < this.config.cupid.length; i++) {
+			if(this.config.cupid[i].search(/^BT\d{4}/) == -1) {
+				this.config.cupid[i] = "BT" + this.config.seasonid + this.config.cupid[i];
+			}
+		}
 	}
 
 });
