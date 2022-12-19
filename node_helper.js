@@ -47,7 +47,10 @@ module.exports = NodeHelper.create({
 		var self = this;
 
 		var options = {
-			method: 'GET'
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json'
+			}
 		};
 
 		var datas = [];
