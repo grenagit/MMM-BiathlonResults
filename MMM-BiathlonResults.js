@@ -13,7 +13,7 @@ Module.register("MMM-BiathlonResults", {
 	// Default module config
 	defaults: {
 		cupid: [],
-		seasonid: "2223",
+		seasonid: "2324",
 		eventid: [],
 		updateInterval: 60 * 60 * 1000, // 1 hour
 		transitionInterval: 10 * 1000, // 10 seconds
