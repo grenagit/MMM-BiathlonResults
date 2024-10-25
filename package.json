@@ -1,6 +1,6 @@
 {
   "name": "MMM-BiathlonResults",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description": "Module for a Magic Mirror device display biathlon results (World Cup and IBU Cup).",
   "main": "MMM-BiathlonResults.js",
   "author": "Grena",
