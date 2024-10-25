@@ -13,7 +13,8 @@ Module.register("MMM-BiathlonResults", {
 	// Default module config
 	defaults: {
 		cupid: [],
-		seasonid: "2324",
+		seasonid: "",
+		seasonChangeMonth: 10, // October (10th month of the year)
 		eventid: [],
 		updateInterval: 60 * 60 * 1000, // 1 hour
 		transitionInterval: 10 * 1000, // 10 seconds
@@ -52,6 +53,7 @@ Module.register("MMM-BiathlonResults", {
 		this.timerTransition = null;
 		this.timerUpdate = null;
 
+		this.generateSeasonId();
 		this.generateCupId();
 
 		this.loaded = false;
@@ -269,6 +271,16 @@ Module.register("MMM-BiathlonResults", {
 	// Capitalize the first letter of a string
 	capFirst: function (string) {
 		return string.charAt(0).toUpperCase() + string.slice(1);
+	},
+
+	// Generate season ID
+	generateSeasonId: function() {
+		if(moment().month() >= (this.config.seasonChangeMonth -1)) {
+			this.config.seasonid = moment().format("YY") +  moment().add(1, 'years').format("YY");
+		} else {
+			this.config.seasonid = moment().subtract(1, 'years').format("YY") + moment().format("YY");
+		}
+		Log.info(this.name + ": The season ID has been automatically set to " + this.config.seasonid);
 	},
 
 	// Generate complete cup ID with season ID

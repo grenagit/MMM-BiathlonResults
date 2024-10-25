@@ -76,7 +76,8 @@ The following properties can be configured:
 | Option                       | Description
 | ---------------------------- | -----------
 | `cupid`                      | The list of cups ID, see *list of cups* below. <br><br> This value is **REQUIRED**
-| `seasonid`                   | The season ID. <br><br> **Default value:** `'2324'` (2023 / 2024)
+| `seasonid`                   | The season ID. <br><br> **Default value:** `''` (Automatic generation)
+| `seasonChangeMonth`          | The month of automatic season's change. <br><br> **Default value:** `10` (October, 10th month of the year)
 | `eventid`                    | The list of events ID. <br><br> **Default value:** `[]`
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `60 * 60 * 1000` (1 hour)
 | `transitionInterval`         | Display time of one cup before moving to the next. (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `10 * 1000` (10 seconds)
@@ -135,7 +136,7 @@ The following properties can be configured:
 | Junior Men Nations Cup                  | JIBUCP__JMNC |
 | IBU Junior Cup Relay Score              | JIBUCP__MXRL |
 
-> [Source](https://biathlonresults.com/modules/sportapi/api/cups?SeasonId=2324)
+> [Source](https://biathlonresults.com/modules/sportapi/api/cups?SeasonId=2425)
 
 ## Todo
 
