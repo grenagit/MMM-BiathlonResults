@@ -40,7 +40,7 @@ Module.register("MMM-BiathlonResults", {
 	getScripts: function() {
 		return ["moment.js"];
 	},
-	
+
 	// Define start sequence
 	start: function() {
 		Log.info("Starting module: " + this.name);
@@ -51,7 +51,7 @@ Module.register("MMM-BiathlonResults", {
 		this.activeItem = 0;
 		this.timerTransition = null;
 		this.timerUpdate = null;
-		
+
 		this.generateCupId();
 
 		this.loaded = false;
@@ -121,7 +121,7 @@ Module.register("MMM-BiathlonResults", {
 			}
 
 			wrapper.appendChild(resultsWrapper);
-		
+
 		}
 
 		if(this.config.showNextEvent) {
@@ -131,7 +131,7 @@ Module.register("MMM-BiathlonResults", {
 			brDescription.innerHTML = this.resultsItems[this.activeItem].description;
 
 			wrapper.appendChild(brDescription);
-			
+
 			var brLocation = document.createElement('div');
 			brLocation.className = "light small location";
 
@@ -167,7 +167,7 @@ Module.register("MMM-BiathlonResults", {
 			wrapper.appendChild(brDate);
 
 		}
-		
+
 		if(this.resultsItems[this.activeItem].finished) {
 
 			var brDescription = document.createElement('div');
@@ -193,7 +193,7 @@ Module.register("MMM-BiathlonResults", {
 			Log.log(payload);
 		}
 	},
-	
+
 	// Use the received data to set the various values before update DOM
 	processBR: function(data) {
 		if(!data || typeof data[0].results === "undefined") {
@@ -207,13 +207,13 @@ Module.register("MMM-BiathlonResults", {
 			var title = data[i].results.CupName + " (" + data[i].results.RaceCount + "/" + data[i].results.TotalRaces + ")";
 			var info = data[i].results.CupInfo;
 			var results = data[i].results.Rows;
-			
+
 			if(data[i].results.RaceCount < data[i].results.TotalRaces || data[i].results.Rows.length == 0) {
 				var finished = false;
 			} else {
 				var finished = true;
 			}
-			
+
 			if(this.config.showNextEvent) {
 				if(typeof data[i].events === "undefined" || typeof data[i].competitions === "undefined") {
 					Log.error(this.name + ": Do not receive usable data for next event (this information will be hidden).");
@@ -270,7 +270,7 @@ Module.register("MMM-BiathlonResults", {
 	capFirst: function (string) {
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	},
-	
+
 	// Generate complete cup ID with season ID
 	generateCupId: function() {
 		for(let i = 0; i < this.config.cupid.length; i++) {
